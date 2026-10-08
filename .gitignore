@@ -32,3 +32,6 @@ dist/
 build/
 coverage/
 *.log
+
+# Downloaded market data
+data/
