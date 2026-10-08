@@ -34,4 +34,4 @@ coverage/
 *.log
 
 # Downloaded market data
-data/
+/data/
