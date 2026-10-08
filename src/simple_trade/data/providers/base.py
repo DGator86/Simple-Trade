@@ -40,8 +40,9 @@ class Provider(ABC):
                 time.sleep(float(retry_after) if retry_after else 2**attempt)
                 continue
             if not resp.ok:
-                raise ProviderError(f"{self.name}: HTTP {resp.status_code} for {url}: "
-                                    f"{resp.text[:300]}")
+                raise ProviderError(
+                    f"{self.name}: HTTP {resp.status_code} for {url}: {resp.text[:300]}"
+                )
             return resp.json()
         raise ProviderError(f"{self.name}: HTTP {resp.status_code} after retries for {url}")
 

@@ -33,6 +33,7 @@ simple-trade-data fetch --source tradier --symbols SPY --timeframe 1d --start 20
 
 ```python
 from simple_trade.data import BarStore, Timeframe
+
 spy = BarStore().read("massive", Timeframe.DAY1, "SPY")
 ```
 

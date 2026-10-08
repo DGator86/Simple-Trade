@@ -36,8 +36,10 @@ class MassiveProvider(Provider):
 
     def bars(self, symbol: str, timeframe: Timeframe, start: date, end: date) -> pd.DataFrame:
         mult, span = _TIMESPAN[timeframe]
-        url = (f"{self.base_url}/v2/aggs/ticker/{symbol.upper()}/range/{mult}/{span}/"
-               f"{start.isoformat()}/{end.isoformat()}")
+        url = (
+            f"{self.base_url}/v2/aggs/ticker/{symbol.upper()}/range/{mult}/{span}/"
+            f"{start.isoformat()}/{end.isoformat()}"
+        )
         params = {"adjusted": "true", "sort": "asc", "limit": 50000, "apiKey": self.api_key}
         rows: list[dict] = []
         while url:
@@ -48,9 +50,17 @@ class MassiveProvider(Provider):
             params = {"apiKey": self.api_key}
         if not rows:
             return empty_bars()
-        df = pd.DataFrame(rows).rename(columns={
-            "t": "timestamp", "o": "open", "h": "high", "l": "low", "c": "close",
-            "v": "volume", "vw": "vwap", "n": "trade_count",
-        })
+        df = pd.DataFrame(rows).rename(
+            columns={
+                "t": "timestamp",
+                "o": "open",
+                "h": "high",
+                "l": "low",
+                "c": "close",
+                "v": "volume",
+                "vw": "vwap",
+                "n": "trade_count",
+            }
+        )
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
         return normalize_bars(df, symbol, self.name)

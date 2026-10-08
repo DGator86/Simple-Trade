@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import argparse
 import sys
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import pandas as pd
 
@@ -28,8 +28,9 @@ def _chunks(start: date, end: date, days: int):
         start = stop + timedelta(days=1)
 
 
-def fetch(source: str, symbols: list[str], timeframe: Timeframe, start: date, end: date,
-          store: BarStore) -> int:
+def fetch(
+    source: str, symbols: list[str], timeframe: Timeframe, start: date, end: date, store: BarStore
+) -> int:
     provider = PROVIDERS[source].from_env()
     total = 0
     for symbol in symbols:
@@ -56,14 +57,22 @@ def main(argv: list[str] | None = None) -> int:
     f.add_argument("--symbols", required=True, help="comma-separated tickers")
     f.add_argument("--timeframe", choices=[t.value for t in Timeframe], default="1d")
     f.add_argument("--start", type=date.fromisoformat, required=True)
-    f.add_argument("--end", type=date.fromisoformat, default=date.today())
+    f.add_argument(
+        "--end", type=date.fromisoformat, default=datetime.now(UTC).date(), help="default: today"
+    )
     f.add_argument("--data-dir", default=None)
     args = parser.parse_args(argv)
 
     symbols = [s.strip().upper() for s in args.symbols.split(",") if s.strip()]
     try:
-        fetch(args.source, symbols, Timeframe(args.timeframe), args.start, args.end,
-              BarStore(args.data_dir))
+        fetch(
+            args.source,
+            symbols,
+            Timeframe(args.timeframe),
+            args.start,
+            args.end,
+            BarStore(args.data_dir),
+        )
     except ProviderError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

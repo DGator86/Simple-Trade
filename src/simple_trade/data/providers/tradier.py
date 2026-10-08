@@ -48,10 +48,15 @@ class TradierProvider(Provider):
         raise ProviderError(f"tradier does not support timeframe {timeframe.value}")
 
     def _daily(self, symbol: str, start: date, end: date) -> pd.DataFrame:
-        payload = self._get(f"{self.base_url}/v1/markets/history", params={
-            "symbol": symbol.upper(), "interval": "daily",
-            "start": start.isoformat(), "end": end.isoformat(),
-        })
+        payload = self._get(
+            f"{self.base_url}/v1/markets/history",
+            params={
+                "symbol": symbol.upper(),
+                "interval": "daily",
+                "start": start.isoformat(),
+                "end": end.isoformat(),
+            },
+        )
         rows = _as_list((payload.get("history") or {}).get("day"))
         if not rows:
             return empty_bars()
@@ -64,11 +69,16 @@ class TradierProvider(Provider):
         day = start
         while day <= end:
             if day.weekday() < 5:
-                payload = self._get(f"{self.base_url}/v1/markets/timesales", params={
-                    "symbol": symbol.upper(), "interval": _INTRADAY[timeframe],
-                    "start": f"{day.isoformat()} 00:00", "end": f"{day.isoformat()} 23:59",
-                    "session_filter": "all",
-                })
+                payload = self._get(
+                    f"{self.base_url}/v1/markets/timesales",
+                    params={
+                        "symbol": symbol.upper(),
+                        "interval": _INTRADAY[timeframe],
+                        "start": f"{day.isoformat()} 00:00",
+                        "end": f"{day.isoformat()} 23:59",
+                        "session_filter": "all",
+                    },
+                )
                 rows = _as_list((payload.get("series") or {}).get("data"))
                 if rows:
                     frames.append(pd.DataFrame(rows))

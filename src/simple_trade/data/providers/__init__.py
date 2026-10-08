@@ -9,5 +9,11 @@ PROVIDERS: dict[str, type[Provider]] = {
     "tradier": TradierProvider,
 }
 
-__all__ = ["PROVIDERS", "AlpacaProvider", "MassiveProvider", "Provider", "ProviderError",
-           "TradierProvider"]
+__all__ = [
+    "PROVIDERS",
+    "AlpacaProvider",
+    "MassiveProvider",
+    "Provider",
+    "ProviderError",
+    "TradierProvider",
+]
