@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 import pandas as pd
 
@@ -20,7 +20,7 @@ BAR_COLUMNS = [
 ]
 
 
-class Timeframe(str, Enum):
+class Timeframe(StrEnum):
     MIN1 = "1m"
     MIN5 = "5m"
     MIN15 = "15m"
